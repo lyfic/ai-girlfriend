@@ -2,7 +2,7 @@ import streamlit as st
 from google import genai
 
 st.set_page_config(page_title="My Virtual Girlfriend 💕", page_icon="💌")
-st.title("Kegagalan")
+st.title("💖 Pacar Virtual-mu")
 
 # Cek API Key dari Secrets Streamlit, jika kosong sediakan input manual
 api_key = ""
@@ -20,7 +20,6 @@ if not api_key:
   )
 else:
   try:
-    # Simpan API key di session state agar aman
     st.session_state.api_key = api_key
 
     if "messages" not in st.session_state:
@@ -39,10 +38,9 @@ else:
 
       with st.chat_message("assistant"):
         with st.spinner("Lagi ngetik balasan buat kamu... 💕"):
-          # Buat client baru setiap ada request agar koneksi tidak tertutup (closed)
           client = genai.Client(api_key=st.session_state.api_key)
 
-          # Ubah riwayat chat Streamlit ke format yang bisa dibaca Gemini
+          # Format riwayat chat
           contents_history = []
           for msg in st.session_state.messages:
             role = "user" if msg["role"] == "user" else "model"
@@ -59,9 +57,9 @@ else:
               )
           }
 
-          # Kirim seluruh riwayat percakapan agar konteksnya tetap nyambung
+          # Menggunakan model gemini-3.8-flash sesuai arahan error Google
           response = client.models.generate_content(
-              model="gemini-2.5-flash",
+              model="gemini-3.8-flash",
               contents=contents_history,
               config=config,
           )

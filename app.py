@@ -22,6 +22,14 @@ else:
   try:
     st.session_state.api_key = api_key
 
+    # --- TAMBAHAN FITUR MEMORI: TOMBOL KONTROL MEMORI/SESI ---
+    st.sidebar.title("🛠️ Pengaturan Memori")
+    st.sidebar.write("Kelola kenangan obrolanmu dengan Castorice.")
+    
+    if st.sidebar.button("Hapus Memori Obrolan"):
+      st.session_state.messages = []
+      st.rerun()
+
     if "messages" not in st.session_state:
       st.session_state.messages = []
 
@@ -40,7 +48,7 @@ else:
         with st.spinner("Castorice sedang merangkai kata... 💕"):
           client = genai.Client(api_key=st.session_state.api_key)
 
-          # Format riwayat chat
+          # Format riwayat chat untuk mempertahankan memori jangka panjang percakapan saat ini
           contents_history = []
           for msg in st.session_state.messages:
             role = "user" if msg["role"] == "user" else "model"

@@ -1,13 +1,3 @@
-"""MyMine - Castorice, istri tercinta (Streamlit + Google Gemini).
-
-Yang berubah dibanding versi lama:
-- Balasan di-stream: teks muncul sedikit demi sedikit, tidak menunggu selesai.
-- Mode berpikir "low": balasan chat jauh lebih cepat.
-- Chat, laporan aktivitas, dan pengingat tidur memakai SATU alur yang sama.
-- Satu persona yang konsisten; tiap tombol hanya menambah petunjuk singkat.
-- Riwayat dipangkas, client di-cache, retry otomatis, pesan error lebih jelas.
-"""
-
 import os
 import time
 from datetime import datetime

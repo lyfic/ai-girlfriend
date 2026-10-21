@@ -26,7 +26,7 @@ else:
 
     if "chat" not in st.session_state:
       st.session_state.chat = client.chats.create(
-          model="gemini-2.5-flash",
+          model="gemini-1.5-flash",
           config={
               "system_instruction": (
                   "Kamu adalah pacar virtual pengguna yang sangat penyayang, "

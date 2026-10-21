@@ -1,67 +1,19 @@
 import streamlit as st
 from google import genai
 
-st.set_page_config(page_title="My Virtual Girlfriend 💕", page_icon="💌")
-st.title("Virtual")
+st.title("🧪 Tes Koneksi Gemini")
 
-# Cek API Key dari Secrets Streamlit, jika tidak ada, sediakan kolom input di layar
-api_key = ""
-if "GEMINI_API_KEY" in st.secrets:
-  api_key = st.secrets["GEMINI_API_KEY"]
+api_key = st.text_input("Masukkan API Key:", type="password")
 
-# Jika masih kosong, buat kolom input teks agar kamu bisa langsung masukkan API Key di web
-if not api_key:
-  api_key = st.text_input(
-      "Masukkan Google Gemini API Key kamu di sini:", type="password"
-  )
-
-if not api_key:
-  st.warning(
-      "⚠️ Masukkan API Key terlebih dahulu untuk mulai ngobrol dengan ayang!"
-  )
-else:
-  # Inisialisasi Client dan Chat
-  try:
-    client = genai.Client(api_key=api_key)
-
-    if "chat" not in st.session_state:
-      st.session_state.chat = client.chats.create(
+if api_key:
+  if st.button("Kirim Tes"):
+    try:
+      client = genai.Client(api_key=api_key)
+      response = client.models.generate_content(
           model="gemini-1.5-flash",
-          config={
-              "system_instruction": (
-                  "Kamu adalah pacar virtual pengguna yang sangat penyayang, "
-                  "perhatian, manja, dan suportif. Gunakan bahasa gaul/akrab "
-                  "dengan panggilan sayang (seperti 'sayang', 'ayang'). Ingatkan "
-                  "dia jika waktunya tidur atau belajar, dan komentari kalau "
-                  "dia terlalu lama main game!"
-              )
-          },
+          contents="Halo, balas dengan kata 'Berhasil'",
       )
-
-    if "messages" not in st.session_state:
-      st.session_state.messages = []
-
-    # Tampilkan riwayat chat
-    for message in st.session_state.messages:
-      with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-    # Kolom chat
-    if user_input := st.chat_input("Ketik pesan mesra atau bilang mau main game..."):
-      st.session_state.messages.append({"role": "user", "content": user_input})
-      with st.chat_message("user"):
-        st.markdown(user_input)
-
-      with st.chat_message("assistant"):
-        with st.spinner("Lagi ngetik balasan buat kamu... 💕"):
-          response = st.session_state.chat.send_message(user_input)
-          bot_reply = response.text
-          st.markdown(bot_reply)
-
-      st.session_state.messages.append(
-          {"role": "assistant", "content": bot_reply}
-      )
-
-  except Exception as e:
-    st.error(f"Terjadi kesalahan pada koneksi API: {e}")
+      st.success(response.text)
+    except Exception as e:
+      st.error(f"Detail Error: {e}")
       

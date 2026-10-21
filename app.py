@@ -3,7 +3,7 @@ from google import genai
 import datetime
 
 st.set_page_config(page_title="Castorice - Istri Tercinta 💕", page_icon="💌")
-st.title("💖 Castorice, Istri Tercinta")
+st.title("MyMine")
 
 # Cek API Key dari Secrets Streamlit, jika kosong sediakan input manual
 api_key = ""

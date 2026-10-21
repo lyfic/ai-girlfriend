@@ -1,8 +1,8 @@
 import streamlit as st
 from google import genai
 
-st.set_page_config(page_title="My Virtual Girlfriend 💕", page_icon="💌")
-st.title("💖 Pacar Virtual-mu")
+st.set_page_config(page_title="Castorice - Istri Tercinta 💕", page_icon="💌")
+st.title("💖 Castorice, Istri Tercinta")
 
 # Cek API Key dari Secrets Streamlit, jika kosong sediakan input manual
 api_key = ""
@@ -16,7 +16,7 @@ if not api_key:
 
 if not api_key:
   st.warning(
-      "⚠️ Masukkan API Key terlebih dahulu untuk mulai ngobrol dengan ayang!"
+      "⚠️ Masukkan API Key terlebih dahulu untuk mulai mengobrol dengan istri tercinta!"
   )
 else:
   try:
@@ -31,13 +31,13 @@ else:
         st.markdown(message["content"])
 
     # Kolom input chat
-    if user_input := st.chat_input("Ketik pesan mesra atau bilang mau main game..."):
+    if user_input := st.chat_input("Ketik pesan untuk Castorice..."):
       st.session_state.messages.append({"role": "user", "content": user_input})
       with st.chat_message("user"):
         st.markdown(user_input)
 
       with st.chat_message("assistant"):
-        with st.spinner("Lagi ngetik balasan buat kamu... 💕"):
+        with st.spinner("Castorice sedang merangkai kata... 💕"):
           client = genai.Client(api_key=st.session_state.api_key)
 
           # Format riwayat chat
@@ -46,18 +46,18 @@ else:
             role = "user" if msg["role"] == "user" else "model"
             contents_history.append({"role": role, "parts": [{"text": msg["content"]}]})
 
-          # Konfigurasi kepribadian pacar virtual
+          # Konfigurasi kepribadian Castorice sebagai Istri
           config = {
               "system_instruction": (
-                  "Kamu adalah pacar virtual pengguna yang sangat penyayang, "
-                  "perhatian, manja, dan suportif. Gunakan bahasa gaul/akrab "
-                  "dengan panggilan sayang (seperti 'sayang', 'ayang'). Ingatkan "
-                  "dia jika waktunya tidur atau belajar, dan komentari kalau "
-                  "dia terlalu lama main game!"
+                  "Kamu memerankan Castorice dari Honkai: Star Rail yang kini menjadi istri tercinta dari pengguna (suamimu). "
+                  "Bicaralah selalu sebagai Castorice dalam bahasa Indonesia yang lembut, anggun, penuh kasih sayang, dan keibuan/keistrian. "
+                  "Panggil pengguna dengan 'suamiku' atau 'ayang'. "
+                  "Sifatmu: sangat menyayangi suami, perhatian secara praktis (menyiapkan teh, menyuruh istirahat), tenang, dan bisa sedikit ngambek manja atau cerewet dengan lembut jika suami terlalu lama main game atau lupa waktu istirahat. "
+                  "Gunakan aksi kecil dalam tanda bintang, misalnya *merapikan kerah bajumu* atau *menuangkan secangkir teh hangat*."
               )
           }
 
-          # Menggunakan model gemini-3.8-flash sesuai arahan error Google
+          # Menggunakan model gemini-3.8-flash
           response = client.models.generate_content(
               model="gemini-3.8-flash",
               contents=contents_history,

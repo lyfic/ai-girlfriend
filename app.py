@@ -1,6 +1,6 @@
 import streamlit as st
-import streamlit.components.v1 as components
 from google import genai
+import random
 
 st.set_page_config(page_title="Castorice - Istri Tercinta 💕", page_icon="💌")
 st.title("💖 Castorice, Istri Tercinta")
@@ -122,36 +122,21 @@ else:
     # --- AREA CHAT UTAMA ---
     for i, message in enumerate(st.session_state.messages):
       with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-        # Jika pesan berasal dari assistant (Castorice), tambahkan tombol suara
+        # Jika pesan dari assistant, tampilkan stiker chibis kustom di atas teks
         if message["role"] == "assistant":
-          # Membersihkan teks dari tanda bintang (*) agar tidak ikut dibaca oleh suara browser
-            clean_text = message["content"].replace("*", "")
-            
-            # Tombol HTML + JavaScript sederhana untuk Text-to-Speech browser
-            tts_html = f"""
-            <div style="margin-top: 5px;">
-                <button onclick="speakText_{i}()" style="background-color: #ff4b4b; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">
-                    🔊 Dengarkan Suara
-                </button>
-            </div>
-            <script>
-                function speakText_{i}() {{
-                    if ('speechSynthesis' in window) {{
-                        window.speechSynthesis.cancel(); // Hentikan suara sebelumnya jika ada
-                        var text = {repr(clean_text)};
-                        var utterance = new SpeechSynthesisUtterance(text);
-                        utterance.lang = 'id-ID'; // Set bahasa Indonesia
-                        utterance.rate = 0.95; // Sedikit lebih lambat agar terkesan lembut
-                        window.speechSynthesis.speak(utterance);
-                    }} else {{
-                        alert("Maaf, browser HP kamu tidak mendukung fitur suara.");
-                    }}
-                }}
-            </script>
-            """
-            components.html(tts_html, height=45)
+          content_lower = message["content"].lower()
+          if any(k in content_lower for k in ["senang", "bagus", "terima kasih", "syukurlah"]):
+            st.image("Castorice 5.png", width=120)
+          elif any(k in content_lower for k in ["malu", "...", "apa", "sih"]):
+            st.image("Castorice 3.png", width=120)
+          elif any(k in content_lower for k in ["buku", "kerja", "tulis", "pikir"]):
+            st.image("Castorice 2.png", width=120)
+          elif any(k in content_lower for k in ["tidur", "istirahat", "lelah", "sakit", "jangan"]):
+            st.image("Castorice 4.png", width=120)
+          else:
+            st.image("Castorice 1.png", width=120)
+
+        st.markdown(message["content"])
 
     # Kolom input chat utama
     if user_input := st.chat_input("Ketik pesan untuk Castorice..."):
@@ -187,6 +172,20 @@ else:
           )
 
           bot_reply = response.text
+          
+          # Tampilkan stiker langsung saat memproses balasan baru
+          content_lower = bot_reply.lower()
+          if any(k in content_lower for k in ["senang", "bagus", "terima kasih", "syukurlah"]):
+            st.image("Castorice 5.png", width=120)
+          elif any(k in content_lower for k in ["malu", "...", "apa", "sih"]):
+            st.image("Castorice 3.png", width=120)
+          elif any(k in content_lower for k in ["buku", "kerja", "tulis", "pikir"]):
+            st.image("Castorice 2.png", width=120)
+          elif any(k in content_lower for k in ["tidur", "istirahat", "lelah", "sakit", "jangan"]):
+            st.image("Castorice 4.png", width=120)
+          else:
+            st.image("Castorice 1.png", width=120)
+
           st.markdown(bot_reply)
 
       st.session_state.messages.append(
@@ -196,4 +195,3 @@ else:
 
   except Exception as e:
     st.error(f"Terjadi kesalahan pada koneksi API: {e}")
-        

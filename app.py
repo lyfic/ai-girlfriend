@@ -2,7 +2,7 @@ import streamlit as st
 from google import genai
 
 st.set_page_config(page_title="My Virtual Girlfriend 💕", page_icon="💌")
-st.title("💖 Pacar Virtual-mu")
+st.title("Kegagalan")
 
 # Cek API Key dari Secrets Streamlit, jika kosong sediakan input manual
 api_key = ""

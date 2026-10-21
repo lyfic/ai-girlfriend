@@ -20,27 +20,13 @@ if not api_key:
   )
 else:
   try:
-    client = genai.Client(api_key=api_key)
-
-    if "chat" not in st.session_state:
-      # Menggunakan model gemini-2.5-flash yang stabil
-      st.session_state.chat = client.chats.create(
-          model="gemini-2.5-flash",
-          config={
-              "system_instruction": (
-                  "Kamu adalah pacar virtual pengguna yang sangat penyayang, "
-                  "perhatian, manja, dan suportif. Gunakan bahasa gaul/akrab "
-                  "dengan panggilan sayang (seperti 'sayang', 'ayang'). Ingatkan "
-                  "dia jika waktunya tidur atau belajar, dan komentari kalau "
-                  "dia terlalu lama main game!"
-              )
-          },
-      )
+    # Simpan API key di session state agar aman
+    st.session_state.api_key = api_key
 
     if "messages" not in st.session_state:
       st.session_state.messages = []
 
-    # Tampilkan riwayat chat
+    # Tampilkan riwayat chat di layar
     for message in st.session_state.messages:
       with st.chat_message(message["role"]):
         st.markdown(message["content"])
@@ -53,7 +39,33 @@ else:
 
       with st.chat_message("assistant"):
         with st.spinner("Lagi ngetik balasan buat kamu... 💕"):
-          response = st.session_state.chat.send_message(user_input)
+          # Buat client baru setiap ada request agar koneksi tidak tertutup (closed)
+          client = genai.Client(api_key=st.session_state.api_key)
+
+          # Ubah riwayat chat Streamlit ke format yang bisa dibaca Gemini
+          contents_history = []
+          for msg in st.session_state.messages:
+            role = "user" if msg["role"] == "user" else "model"
+            contents_history.append({"role": role, "parts": [{"text": msg["content"]}]})
+
+          # Konfigurasi kepribadian pacar virtual
+          config = {
+              "system_instruction": (
+                  "Kamu adalah pacar virtual pengguna yang sangat penyayang, "
+                  "perhatian, manja, dan suportif. Gunakan bahasa gaul/akrab "
+                  "dengan panggilan sayang (seperti 'sayang', 'ayang'). Ingatkan "
+                  "dia jika waktunya tidur atau belajar, dan komentari kalau "
+                  "dia terlalu lama main game!"
+              )
+          }
+
+          # Kirim seluruh riwayat percakapan agar konteksnya tetap nyambung
+          response = client.models.generate_content(
+              model="gemini-2.5-flash",
+              contents=contents_history,
+              config=config,
+          )
+
           bot_reply = response.text
           st.markdown(bot_reply)
 
@@ -63,4 +75,3 @@ else:
 
   except Exception as e:
     st.error(f"Terjadi kesalahan pada koneksi API: {e}")
-    
